@@ -40,7 +40,7 @@ namespace Dately.Controllers
 
             var passwordCheck = await _repo.CheckPasswordAsync(userFromDb, model.Password);
 
-            if (!passwordCheck)
+            if (!passwordCheck.Succeeded)
                 return Unauthorized("Password is invalid.");
 
             var claims = await RenderClaimsAsync(userFromDb);

@@ -7,28 +7,30 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Dately.Persistence
 {
-    public class AuthRepository: IAuthRepository
+    public class AuthRepository : IAuthRepository
     {
         private readonly UserManager<User> _userManager;
+        private readonly SignInManager<User> _signInManager;
 
-        public AuthRepository(UserManager<User> userManager)
+        public AuthRepository(UserManager<User> userManager, SignInManager<User> signInManager)
         {
             _userManager = userManager;
+            _signInManager = signInManager;
         }
 
         public async Task<User> GetByUserNameAsync(string userName)
         {
-           return await _userManager.FindByNameAsync(userName);
+            return await _userManager.FindByNameAsync(userName);
         }
 
         public async Task<User> GetByEmailAsync(string userName)
         {
-           return await _userManager.FindByEmailAsync(userName);
+            return await _userManager.FindByEmailAsync(userName);
         }
 
-        public async Task<bool> CheckPasswordAsync(User user, string password)
+        public async Task<SignInResult> CheckPasswordAsync(User user, string password)
         {
-            return await _userManager.CheckPasswordAsync(user, password);
+            return await _signInManager.CheckPasswordSignInAsync(user, password, false);
         }
 
         public async Task<IdentityResult> CreateUserAsync(User user, string password)
