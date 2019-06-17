@@ -11,6 +11,7 @@ namespace Dately.Mapping
             CreateMap<UserForRegisterDto, User>();
             
             CreateMap<User, UserForDetailDto>();
+            CreateMap<User, UserForListDto>();
         }
     }
 }
