@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 
 namespace Dately.Shared.Extensions
 {
-    public static class ApplicationBuilderHelper
+    public static class ApplicationBuilderExtension
     {
         public static IApplicationBuilder UseGlobalExceptionHandler(this IApplicationBuilder app)
         {

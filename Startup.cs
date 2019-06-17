@@ -4,6 +4,7 @@ using Dately.Core;
 using Dately.Core.Models;
 using Dately.Core.Seeds;
 using Dately.Persistence;
+using Dately.Shared.Enums;
 using Dately.Shared.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -43,6 +44,12 @@ namespace Dately
                         ValidateIssuerSigningKey = true
                     };
                 });
+            services.AddAuthorization(opt => {
+                opt.AddPolicy(PolicyPrefix.RequireAdmin, p => p.RequireRole(RolePrefix.Admin));
+                opt.AddPolicy(PolicyPrefix.RequireModerator, p => p.RequireRole(RolePrefix.Admin, RolePrefix.Moderator));
+                opt.AddPolicy(PolicyPrefix.RequireUser, p => p.RequireRole(RolePrefix.User));
+            });
+
             services.AddAutoMapper(typeof(Startup));
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddTransient<SeedUsersAndRoles>();

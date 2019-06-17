@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Dately.Core;
 using Dately.Core.Models;
+using Dately.Shared.Enums;
 using Microsoft.AspNetCore.Identity;
 
 namespace Dately.Persistence
@@ -37,7 +38,7 @@ namespace Dately.Persistence
 
         public async Task<IdentityResult> AddToRoleAsync(User user)
         {
-            return await _userManager.AddToRoleAsync(user, "User");
+            return await _userManager.AddToRoleAsync(user, RolePrefix.User);
         }
 
         public async Task<IList<string>> GetRolesAsync(User user)
