@@ -31,7 +31,8 @@ namespace Dately
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<DatelyDbContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-            services.AddIdentity<User, IdentityRole>()
+            
+            services.AddIdentity<User, Role>()
                 .AddEntityFrameworkStores<DatelyDbContext>()
                 .AddDefaultTokenProviders();
             services.AddAuthentication(opt => opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme)

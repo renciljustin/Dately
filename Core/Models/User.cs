@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Dately.Shared.Enums;
@@ -22,5 +23,7 @@ namespace Dately.Core.Models
         public DateTime? BirthDate { get; set; }
 
         public Gender? Interest { get; set; }
+
+        public ICollection<UserRole> Roles { get; set; }
     }
 }
