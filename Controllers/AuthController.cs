@@ -6,6 +6,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
+using Dately.Core;
 using Dately.Core.Models;
 using Dately.Persistence.Dtos;
 using Microsoft.AspNetCore.Identity;
@@ -21,32 +22,39 @@ namespace Dately.Controllers
     {
         private readonly IConfiguration _config;
         private readonly IMapper _mapper;
-        private readonly UserManager<User> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
-        public AuthController(IConfiguration config,
-            IMapper mapper,
-            UserManager<User> userManager,
-            RoleManager<IdentityRole> roleManager)
+        private readonly IAuthRepository _repo;
+        public AuthController(IConfiguration config, IMapper mapper, IAuthRepository repo)
         {
             _config = config;
             _mapper = mapper;
-            _userManager = userManager;
-            _roleManager = roleManager;
+            _repo = repo;
         }
 
         [HttpPost("login")]
         public async Task<IActionResult> Login(UserForLoginDto model)
         {
-            var userFromDb = await _userManager.FindByNameAsync(model.UserName);
+            var userFromDb = await _repo.GetByUserNameAsync(model.UserName);
 
             if (userFromDb == null)
                 return Unauthorized("Username is invalid.");
 
-            var passwordCheck = await _userManager.CheckPasswordAsync(userFromDb, model.Password);
+            var passwordCheck = await _repo.CheckPasswordAsync(userFromDb, model.Password);
 
             if (!passwordCheck)
                 return Unauthorized("Password is invalid.");
 
+            var claims = await RenderClaimsAsync(userFromDb);
+
+            var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_config["Token:Key"]));
+            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+
+            var token = RenderToken(claims, credentials);
+
+            return Ok(new { token });
+        }
+
+        private async Task<List<Claim>> RenderClaimsAsync(User userFromDb)
+        {
             var claims = new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.NameId, userFromDb.Id),
@@ -54,12 +62,14 @@ namespace Dately.Controllers
                 new Claim(JwtRegisteredClaimNames.Email, userFromDb.Email)
             };
 
-            var roles = await _userManager.GetRolesAsync(userFromDb);
+            var roles = await _repo.GetRolesAsync(userFromDb);
             claims.AddRange(roles.Select(r => new Claim("roles", r)));
 
-            var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_config["Token:Key"]));
-            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+            return claims;
+        }
 
+        private string RenderToken(List<Claim> claims, SigningCredentials credentials)
+        {
             var token = new JwtSecurityToken(
                 _config["Token:Issuer"],
                 _config["Token:Audience"],
@@ -68,36 +78,34 @@ namespace Dately.Controllers
                 signingCredentials: credentials
             );
 
-            return Ok(new {
-                token = new JwtSecurityTokenHandler().WriteToken(token)
-            });
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
         [HttpPost("register")]
         public async Task<IActionResult> Register(UserForRegisterDto model)
         {
-            if (await _userManager.FindByNameAsync(model.UserName) != null)
+            if (await _repo.GetByUserNameAsync(model.UserName) != null)
                 return BadRequest("Username is already used.");
 
-            if (await _userManager.FindByEmailAsync(model.Email) != null)
+            if (await _repo.GetByEmailAsync(model.Email) != null)
                 return BadRequest("Email is already used.");
 
             var userToCreate = _mapper.Map<User>(model);
 
-            var createUserResult = await _userManager.CreateAsync(userToCreate, model.Password);
+            var createUserResult = await _repo.CreateUserAsync(userToCreate, model.Password);
 
             if (!createUserResult.Succeeded)
                 return BadRequest("Registration failed.");
 
-            var addRoleResult = await _userManager.AddToRoleAsync(userToCreate, "User");
+            var addRoleResult = await _repo.AddToRoleAsync(userToCreate);
 
             if (!createUserResult.Succeeded)
             {
-                await _userManager.DeleteAsync(userToCreate);
+                await _repo.DeleteUserAsync(userToCreate);
                 return BadRequest("Registration failed.");
             }
 
-            var userFromDb = await _userManager.FindByNameAsync(userToCreate.UserName);
+            var userFromDb = await _repo.GetByUserNameAsync(userToCreate.UserName);
             
             return CreatedAtRoute("", _mapper.Map<UserForDetailDto>(userFromDb));
         }
