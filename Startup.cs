@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
 using Dately.Core.Models;
 using Dately.Core.Seeds;
 using Dately.Persistence;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -15,6 +18,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Dately
 {
@@ -34,6 +38,17 @@ namespace Dately
             services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<DatelyDbContext>()
                 .AddDefaultTokenProviders();
+            services.AddAuthentication(opt => opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(opt => {
+                    opt.TokenValidationParameters = new TokenValidationParameters()
+                    {
+                        ValidIssuer = Configuration["Token:Issuer"],
+                        ValidAudience = Configuration["Token:Audience"],
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration["Token:Key"])),
+                        ValidateIssuerSigningKey = true
+                    };
+                });
+            services.AddAutoMapper(typeof(Startup));
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddTransient<SeedUsersAndRoles>();
         }
@@ -53,6 +68,7 @@ namespace Dately
 
             seed.BeginSeeding();
             //app.UseHttpsRedirection();
+            app.UseAuthentication();
             app.UseMvc();
         }
     }

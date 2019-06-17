@@ -1,14 +1,11 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Dately.Shared.Enums;
 using Microsoft.AspNetCore.Identity;
 
 namespace Dately.Core.Models
 {
-    public enum Gender {
-        Male=0, Female=1
-    }
-
     public class User : IdentityUser
     {
         [Required]
