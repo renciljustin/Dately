@@ -19,14 +19,11 @@ namespace Dately.Core.Models
         [StringLength(maximumLength: 255, MinimumLength=2, ErrorMessage="Must be at least 2 to 255 characters.")]
         public string LastName { get; set; }
 
-        [Required]
-        public Gender Gender { get; set; }
+        public Gender? Gender { get; set; }
 
-        [Required]
-        public Gender Interest { get; set; }
-
-        [Required]
         [Column(TypeName = "DATE")]
-        public DateTime BirthDate { get; set; }
+        public DateTime? BirthDate { get; set; }
+
+        public Gender? Interest { get; set; }
     }
 }

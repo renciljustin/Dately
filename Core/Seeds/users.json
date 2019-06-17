@@ -1,0 +1,29 @@
+[
+    {
+        "userName": "Rencil",
+        "email": "rencil@dately.com",
+        "firstName": "Rencil Justin",
+        "lastName": "Evangelista",
+        "gender": null,
+        "birthDate": null,
+        "interest": null
+    },
+    {
+        "userName": "Faye",
+        "email": "faye@dately.com",
+        "firstName": "Richelle Faye",
+        "lastName": "Margarejo",
+        "gender": 1,
+        "birthDate": "1998-03-31",
+        "interest": 0
+    },
+    {
+        "userName": "John",
+        "email": "john@dately.com",
+        "firstName": "John",
+        "lastName": "Doe",
+        "gender": 0,
+        "birthDate": "1980-01-01",
+        "interest": 1
+    }
+]
