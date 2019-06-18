@@ -73,7 +73,9 @@ namespace Dately.Persistence
                 Token = Guid.NewGuid().ToString(),
                 UserId = userId,
                 ExpiryDate = DateTime.UtcNow.AddHours(3),
-                Revoked = false
+                Revoked = false,
+                CreationTime = DateTime.UtcNow,
+                LastModified = DateTime.UtcNow
             };
 
             _context.RefreshTokens.Add(refreshToken);
@@ -89,6 +91,8 @@ namespace Dately.Persistence
         public RefreshToken UpdateRefreshToken(RefreshToken refreshToken)
         {
             refreshToken.ExpiryDate = DateTime.UtcNow.AddHours(3);
+            refreshToken.TotalRefresh++;
+            refreshToken.LastModified = DateTime.UtcNow;
             return refreshToken;
         }
     }
