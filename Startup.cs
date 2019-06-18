@@ -32,6 +32,15 @@ namespace Dately
         {
             services.AddDbContext<DatelyDbContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             
+            var builder = services.AddIdentityCore<User>(opt =>
+            {
+                opt.Password.RequireDigit = false;
+                opt.Password.RequireNonAlphanumeric = false;
+                opt.Password.RequireUppercase = false;
+                opt.Password.RequireLowercase = false;
+                opt.Password.RequiredLength = 8;
+            });
+
             services.AddIdentity<User, Role>()
                 .AddEntityFrameworkStores<DatelyDbContext>()
                 .AddDefaultTokenProviders();
