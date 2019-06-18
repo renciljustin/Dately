@@ -5,8 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Dately.Persistence
 {
-    public class DatelyDbContext : IdentityDbContext<User, Role, string,IdentityUserClaim<string>, UserRole, IdentityUserLogin<string>, IdentityRoleClaim<string>, IdentityUserToken<string>>
+    public class DatelyDbContext : IdentityDbContext<User, Role, string, IdentityUserClaim<string>, UserRole, IdentityUserLogin<string>, IdentityRoleClaim<string>, IdentityUserToken<string>>
     {
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
         public DatelyDbContext(DbContextOptions<DatelyDbContext> options): base(options)
         {
             

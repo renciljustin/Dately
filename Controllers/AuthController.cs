@@ -9,7 +9,6 @@ using AutoMapper;
 using Dately.Core;
 using Dately.Core.Models;
 using Dately.Persistence.Dtos;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -23,11 +22,13 @@ namespace Dately.Controllers
         private readonly IConfiguration _config;
         private readonly IMapper _mapper;
         private readonly IAuthRepository _repo;
-        public AuthController(IConfiguration config, IMapper mapper, IAuthRepository repo)
+        private readonly IUnitOfWork _uow;
+        public AuthController(IConfiguration config, IMapper mapper, IAuthRepository repo, IUnitOfWork uow)
         {
             _config = config;
             _mapper = mapper;
             _repo = repo;
+            _uow = uow;
         }
 
         [HttpPost("login")]
@@ -43,42 +44,18 @@ namespace Dately.Controllers
             if (!passwordCheck.Succeeded)
                 return Unauthorized("Password is invalid.");
 
-            var claims = await RenderClaimsAsync(userFromDb);
+            var token = await GenerateTokenAsync(userFromDb);
 
-            var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_config["Token:Key"]));
-            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+            var refreshToken = _repo.CreateRefreshToken(userFromDb.Id);
 
-            var token = RenderToken(claims, credentials);
+            await _uow.SaveChangesAsync();
 
-            return Ok(new { token });
-        }
-
-        private async Task<List<Claim>> RenderClaimsAsync(User userFromDb)
-        {
-            var claims = new List<Claim>
-            {
-                new Claim(JwtRegisteredClaimNames.NameId, userFromDb.Id),
-                new Claim(JwtRegisteredClaimNames.UniqueName, userFromDb.UserName),
-                new Claim(JwtRegisteredClaimNames.Email, userFromDb.Email)
-            };
-
-            var roles = await _repo.GetRolesAsync(userFromDb);
-            claims.AddRange(roles.Select(r => new Claim("roles", r)));
-
-            return claims;
-        }
-
-        private string RenderToken(List<Claim> claims, SigningCredentials credentials)
-        {
-            var token = new JwtSecurityToken(
-                _config["Token:Issuer"],
-                _config["Token:Audience"],
-                claims,
-                expires: DateTime.Now.AddHours(3),
-                signingCredentials: credentials
+            return Ok(new
+                {
+                    token = new JwtSecurityTokenHandler().WriteToken(token),
+                    refreshToken = _mapper.Map<RefreshTokenForDisplayDto>(refreshToken)
+                }
             );
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
         [HttpPost("register")]
@@ -106,8 +83,84 @@ namespace Dately.Controllers
             }
 
             var userFromDb = await _repo.GetByUserNameAsync(userToCreate.UserName);
-            
+
             return CreatedAtRoute("", _mapper.Map<UserForDetailDto>(userFromDb));
         }
+
+        [HttpPost("{refreshToken}/refresh")]
+        public async Task<IActionResult> RefreshToken(string refreshToken)
+        {
+            var refreshTokenFromDb = await _repo.GetRefreshTokenAsync(refreshToken);
+
+            if (refreshTokenFromDb == null)
+                return NotFound("Token not found");
+
+            if (refreshTokenFromDb.ExpiryDate < DateTime.UtcNow)
+                return Unauthorized("Refresh token is expired.");
+
+            var userFromDb = await _repo.GetUserByIdAsync(refreshTokenFromDb.UserId);
+
+            var token = await GenerateTokenAsync(userFromDb);
+
+            var newRefreshToken = _repo.UpdateRefreshToken(refreshTokenFromDb);
+            
+            await _uow.SaveChangesAsync();
+
+            return Ok(new 
+                {
+                    token = new JwtSecurityTokenHandler().WriteToken(token),
+                    refreshToken = _mapper.Map<RefreshTokenForDisplayDto>(newRefreshToken)
+                }
+            );
+        }
+
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout(string refreshToken)
+        {
+            await Task.Delay(1000);
+            return Ok();
+        }
+
+        #region Generate Token
+
+        private async Task<JwtSecurityToken> GenerateTokenAsync(User user)
+        {
+            var claims = await RenderClaimsAsync(user);
+            var credentials = RenderCredentials();
+
+            var token = new JwtSecurityToken(
+                _config["Token:Issuer"],
+                _config["Token:Audience"],
+                claims,
+                expires: DateTime.UtcNow.AddMinutes(5),
+                signingCredentials: credentials
+            );
+
+            return token;
+        }
+
+        private async Task<List<Claim>> RenderClaimsAsync(User userFromDb)
+        {
+            var claims = new List<Claim>
+            {
+                new Claim(JwtRegisteredClaimNames.NameId, userFromDb.Id),
+                new Claim(JwtRegisteredClaimNames.UniqueName, userFromDb.UserName),
+                new Claim(JwtRegisteredClaimNames.Email, userFromDb.Email)
+            };
+
+            var roles = await _repo.GetRolesAsync(userFromDb);
+            claims.AddRange(roles.Select(r => new Claim("role", r)));
+
+            return claims;
+        }
+
+        private SigningCredentials RenderCredentials()
+        {
+            var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_config["Token:Key"]));
+            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+            return credentials;
+        }
+
+        #endregion
     }
 }

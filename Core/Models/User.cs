@@ -25,5 +25,7 @@ namespace Dately.Core.Models
         public Gender? Interest { get; set; }
 
         public ICollection<UserRole> Roles { get; set; }
+
+        public ICollection<RefreshToken> RefreshTokens { get; set; }
     }
 }
