@@ -1,3 +1,18 @@
-<p>
-  login works!
-</p>
+<body class="text-center">
+  <form [formGroup]="login" class="form-login" (ngSubmit)="onLogin()">
+    <h1 class="h3 mb-3 font-weight-light">Login to Dately</h1>
+    <div *ngIf="loginFailed" class="alert alert-danger">
+      Invalid username or password.
+    </div>
+    
+    <label for="userName" class="sr-only">Username</label>
+    <input formControlName="userName" type="text" id="userName" class="form-control" placeholder="Username" autocomplete="off" required autofocus>
+    
+    <label for="password" class="sr-only">Password</label>
+    <input formControlName="password" type="password" id="password" class="form-control" placeholder="Password" required>
+    
+    <a [routerLink]="[ '/register' ]" class="btn btn-link mb-3">Doesn't have an account?</a>
+    
+    <button class="btn btn-lg btn-primary btn-block" type="submit" [disabled]="login.invalid">Login</button>
+  </form>
+</body>

@@ -1,6 +1,12 @@
-@import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
-@import "../node_modules/bootswatch/dist/united/bootstrap.min.css";
+@import "~bootstrap/dist/css/bootstrap.min.css";
+@import "~bootswatch/dist/minty/bootstrap.min.css";
+@import "~ngx-bootstrap/datepicker/bs-datepicker.css";
 
 body {
+    background-color: #f1f1f1;
     padding-top: 56px;
+}
+
+.form-control.ng-touched.ng-invalid {
+    border: 2px solid rgba(211, 114, 114, 0.50);
 }
