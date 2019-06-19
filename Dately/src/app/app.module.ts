@@ -1,3 +1,4 @@
+import { TextTransformDirective } from './components/shared/directives/text-transform.directive';
 import { AuthService } from './services/auth.service';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -28,7 +29,8 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
     NavigationComponent,
     RegisterComponent,
     UserDetailComponent,
-    UserListComponent
+    UserListComponent,
+    TextTransformDirective
   ],
   imports: [
     AppRoutingModule,
