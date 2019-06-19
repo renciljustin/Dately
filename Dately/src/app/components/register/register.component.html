@@ -1,5 +1,5 @@
 <body class="text-center">
-  <form [formGroup]="register" class="form-register">
+  <form [formGroup]="register" class="form-register" (ngSubmit)="onRegister()">
     <h1 class="h3 mb-3 font-weight-light">Register to Dately</h1>
     
     <div class="row">
@@ -85,6 +85,9 @@
                 I'm a Female
             </label>
           </div>
+          <div *ngIf="gender.invalid && gender.touched" class="text-danger text-left">
+            <div *ngIf="gender.hasError('required')"><small>Selection required.</small></div>
+          </div>
         </div>
 
         <div class="form-group text-left">
@@ -101,13 +104,16 @@
               Female
             </label>
           </div>
+          <div *ngIf="interest.invalid && interest.touched" class="text-danger text-left">
+            <div *ngIf="interest.hasError('required')"><small>Selection required.</small></div>
+          </div>
         </div>
       </div>
     </div>
     
     <a [routerLink]="[ '/login' ]" class="btn btn-link mb-3">Already have an account?</a>
     
-    <button class="btn btn-lg btn-primary btn-block" type="submit">Register</button>
+    <button class="btn btn-lg btn-primary btn-block" type="submit" [disabled]="register.invalid">Register</button>
     <div>{{register.value|json}}</div>
   </form>
 </body>

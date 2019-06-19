@@ -59,6 +59,7 @@ namespace Dately
                 opt.AddPolicy(PolicyPrefix.RequireModerator, p => p.RequireRole(RolePrefix.Admin, RolePrefix.Moderator));
                 opt.AddPolicy(PolicyPrefix.RequireUser, p => p.RequireRole(RolePrefix.User));
             });
+            services.AddCors();
 
             services.AddAutoMapper(typeof(Startup));
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
@@ -85,6 +86,7 @@ namespace Dately
             seed.BeginSeeding();
             //app.UseHttpsRedirection();
             app.UseAuthentication();
+            app.UseCors(opt => opt.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
             app.UseMvc();
         }
     }

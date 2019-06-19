@@ -1,6 +1,8 @@
+import { AuthService } from './services/auth.service';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -12,7 +14,11 @@ import { RegisterComponent } from './components/register/register.component';
 import { UserDetailComponent } from './components/users/user-detail/user-detail.component';
 import { UserListComponent } from './components/users/user-list/user-list.component';
 
+import { TokenService } from './services/token.service';
+
+
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 
 @NgModule({
   declarations: [
@@ -29,10 +35,15 @@ import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
     BrowserAnimationsModule,
     BrowserModule,
     FormsModule,
+    HttpClientModule,
     ReactiveFormsModule,
-    BsDatepickerModule.forRoot()
+    BsDatepickerModule.forRoot(),
+    BsDropdownModule.forRoot()
   ],
-  providers: [],
+  providers: [
+    AuthService,
+    TokenService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

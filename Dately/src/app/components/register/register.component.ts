@@ -1,5 +1,8 @@
+import { AuthService } from './../../services/auth.service';
+import { UserForRegister } from './../../models/UserForRegister';
 import { FormGroup, FormBuilder, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-register',
@@ -12,7 +15,7 @@ export class RegisterComponent implements OnInit {
   minDate: Date;
   maxDate: Date;
 
-  constructor(fb: FormBuilder) {
+  constructor(fb: FormBuilder, private authService: AuthService, private router: Router) {
     this.register = fb.group({
       userName: fb.control(null, [
         Validators.required,
@@ -30,9 +33,9 @@ export class RegisterComponent implements OnInit {
       confirmPassword: fb.control(null, [Validators.required]),
       firstName: fb.control(null, [Validators.required]),
       lastName: fb.control(null, [Validators.required]),
-      birthDate: fb.control(new Date(2000, 0, 1), [Validators.required]),
-      gender: fb.control(0, [Validators.required]),
-      interest: fb.control(1, [Validators.required])
+      birthDate: fb.control(null, [Validators.required]),
+      gender: fb.control(null, [Validators.required]),
+      interest: fb.control(null, [Validators.required])
     },
     {
       validators: this.passwordMatchValidator
@@ -69,8 +72,16 @@ export class RegisterComponent implements OnInit {
     return this.register.get('lastName');
   }
 
+  get gender(): AbstractControl {
+    return this.register.get('gender');
+  }
+
   get birthDate(): AbstractControl {
     return this.register.get('birthDate');
+  }
+
+  get interest(): AbstractControl {
+    return this.register.get('interest');
   }
 
   passwordMatchValidator(g: FormGroup): ValidationErrors | null {
@@ -83,5 +94,17 @@ export class RegisterComponent implements OnInit {
     return {
       mismatchPassword: true
     };
+  }
+
+  onRegister() {
+    const userToRegister = this.register.value as UserForRegister;
+
+    this.authService.register(userToRegister)
+      .subscribe(
+        () => {
+          this.register.reset();
+          this.router.navigate(['/login']);
+        }
+      );
   }
 }
