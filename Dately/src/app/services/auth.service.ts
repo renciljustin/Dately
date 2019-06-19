@@ -44,6 +44,14 @@ export class AuthService {
       );
   }
 
+  userNameExists(userName: any) {
+    return this.http.get(this.uri + 'check-username/' + userName);
+  }
+
+  emailExists(email: any) {
+    return this.http.get(this.uri + 'check-email/' + email);
+  }
+
   isAuthenticated() {
     return !this.tokenService.isTokenExpired();
   }

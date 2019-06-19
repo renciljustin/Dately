@@ -30,12 +30,12 @@ namespace Dately.Persistence
             return await _userManager.FindByIdAsync(id);
         }
 
-        public async Task<User> GetByUserNameAsync(string userName)
+        public async Task<User> GetUserByUserNameAsync(string userName)
         {
             return await _userManager.FindByNameAsync(userName);
         }
 
-        public async Task<User> GetByEmailAsync(string userName)
+        public async Task<User> GetUserByEmailAsync(string userName)
         {
             return await _userManager.FindByEmailAsync(userName);
         }

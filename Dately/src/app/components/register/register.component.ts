@@ -21,10 +21,10 @@ export class RegisterComponent implements OnInit {
         Validators.required,
         Validators.minLength(3),
         Validators.maxLength(20),
-        Validators.pattern(/^[A-Za-z0-9]+$/)]),
+        Validators.pattern(/^[A-Za-z0-9]+$/)], this.userNameValidator.bind(this)),
       email: fb.control(null, [
         Validators.required,
-        Validators.email]),
+        Validators.email], this.emailValidator.bind(this)),
       password: fb.control(null, [
         Validators.required,
         Validators.minLength(8),
@@ -94,6 +94,40 @@ export class RegisterComponent implements OnInit {
     return {
       mismatchPassword: true
     };
+  }
+
+  // tslint:disable-next-line:member-ordering
+  userNameValidator(control: AbstractControl): Promise<ValidationErrors | null> {
+    return new Promise((resolve, reject) => {
+      this.authService.userNameExists(control.value)
+        .subscribe(
+          exists => {
+            if (exists) {
+              resolve({
+                userNameExists: true
+              });
+            }
+            resolve(null);
+          }
+        );
+    });
+  }
+
+   // tslint:disable-next-line:member-ordering
+   emailValidator(control: AbstractControl): Promise<ValidationErrors | null> {
+    return new Promise((resolve, reject) => {
+      this.authService.emailExists(control.value)
+        .subscribe(
+          exists => {
+            if (exists) {
+              resolve({
+                emailExists: true
+              });
+            }
+            resolve(null);
+          }
+        );
+    });
   }
 
   onRegister() {

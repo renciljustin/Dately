@@ -34,7 +34,7 @@ namespace Dately.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login(UserForLoginDto model)
         {
-            var userFromDb = await _repo.GetByUserNameAsync(model.UserName);
+            var userFromDb = await _repo.GetUserByUserNameAsync(model.UserName);
 
             if (userFromDb == null)
                 return Unauthorized("Username is invalid.");
@@ -61,10 +61,10 @@ namespace Dately.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register(UserForRegisterDto model)
         {
-            if (await _repo.GetByUserNameAsync(model.UserName) != null)
+            if (await _repo.GetUserByUserNameAsync(model.UserName) != null)
                 return BadRequest("Username is already used.");
 
-            if (await _repo.GetByEmailAsync(model.Email) != null)
+            if (await _repo.GetUserByEmailAsync(model.Email) != null)
                 return BadRequest("Email is already used.");
 
             var userToCreate = _mapper.Map<User>(model);
@@ -82,9 +82,25 @@ namespace Dately.Controllers
                 return BadRequest("Registration failed.");
             }
 
-            var userFromDb = await _repo.GetByUserNameAsync(userToCreate.UserName);
+            var userFromDb = await _repo.GetUserByUserNameAsync(userToCreate.UserName);
 
             return CreatedAtRoute("", _mapper.Map<UserForDetailDto>(userFromDb));
+        }
+
+        [HttpGet("check-username/{userName}")]
+        public async Task<IActionResult> IsUserNameExists(string userName)
+        {
+            var userFromDb = await _repo.GetUserByUserNameAsync(userName);
+
+            return Ok(userFromDb != null);
+        }
+
+        [HttpGet("check-email/{email}")]
+        public async Task<IActionResult> IsEmailExists(string email)
+        {
+            var userFromDb = await _repo.GetUserByEmailAsync(email);
+
+            return Ok(userFromDb != null);
         }
 
         [HttpPost("{refreshToken}/refresh")]

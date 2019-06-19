@@ -8,8 +8,8 @@ namespace Dately.Core
     public interface IAuthRepository
     {
         Task<User> GetUserByIdAsync(string id);
-        Task<User> GetByUserNameAsync(string userName);
-        Task<User> GetByEmailAsync(string userName);
+        Task<User> GetUserByUserNameAsync(string userName);
+        Task<User> GetUserByEmailAsync(string userName);
         Task<SignInResult> CheckPasswordAsync(User user, string password);
         Task<IdentityResult> CreateUserAsync(User user, string password);
         Task<IdentityResult> AddToRoleAsync(User user);
