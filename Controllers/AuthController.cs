@@ -54,7 +54,7 @@ namespace Dately.Controllers
                 {
                     accessToken = new {
                         token = new JwtSecurityTokenHandler().WriteToken(token),
-                        expiryDate = token.ValidTo.ToString("MMM-dd-yyyy hh:mm:ss tt")
+                        expiryDate = token.ValidTo
                     },
                     refreshToken = _mapper.Map<RefreshTokenForDisplayDto>(refreshToken)
                 }
@@ -160,7 +160,7 @@ namespace Dately.Controllers
                 _config["Token:Issuer"],
                 _config["Token:Audience"],
                 claims,
-                expires: DateTime.Now.AddMinutes(15),
+                expires: DateTime.UtcNow.AddMinutes(15),
                 signingCredentials: credentials
             );
 
