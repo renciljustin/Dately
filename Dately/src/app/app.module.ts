@@ -1,7 +1,7 @@
-import { AuthInterceptor } from './auth.interceptor';
 import { AuthGuard } from './guards/auth.guard';
-import { TextTransformDirective } from './components/shared/directives/text-transform.directive';
-import { AuthService } from './services/auth.service';
+import { AppControlsModule } from './app-controls.module';
+import { AppDirectivesModule } from './app-directives.module';
+import { AuthInterceptor } from './auth.interceptor';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -17,11 +17,8 @@ import { RegisterComponent } from './components/register/register.component';
 import { UserDetailComponent } from './components/users/user-detail/user-detail.component';
 import { UserListComponent } from './components/users/user-list/user-list.component';
 
+import { AuthService } from './services/auth.service';
 import { TokenService } from './services/token.service';
-
-
-import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
-import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 
 @NgModule({
   declarations: [
@@ -31,23 +28,22 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
     NavigationComponent,
     RegisterComponent,
     UserDetailComponent,
-    UserListComponent,
-    TextTransformDirective
+    UserListComponent
   ],
   imports: [
+    AppControlsModule,
+    AppDirectivesModule,
     AppRoutingModule,
     BrowserAnimationsModule,
     BrowserModule,
     FormsModule,
     HttpClientModule,
-    ReactiveFormsModule,
-    BsDatepickerModule.forRoot(),
-    BsDropdownModule.forRoot()
+    ReactiveFormsModule
   ],
   providers: [
+    AuthGuard,
     AuthService,
     TokenService,
-    AuthGuard,
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]
