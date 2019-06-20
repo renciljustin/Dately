@@ -16,6 +16,10 @@ export class RegisterComponent implements OnInit {
   maxDate: Date;
 
   constructor(fb: FormBuilder, private authService: AuthService, private router: Router) {
+    if (authService.isAuthenticated()) {
+      router.navigate(['/home']);
+    }
+
     this.register = fb.group({
       userName: fb.control(null, [
         Validators.required,

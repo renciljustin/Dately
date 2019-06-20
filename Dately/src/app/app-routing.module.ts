@@ -1,3 +1,4 @@
+import { AuthGuard } from './guards/auth.guard';
 import { UserDetailComponent } from './components/users/user-detail/user-detail.component';
 import { UserListComponent } from './components/users/user-list/user-list.component';
 import { RegisterComponent } from './components/register/register.component';
@@ -12,13 +13,15 @@ const routes: Routes = [
   { path: 'index', component: HomeComponent },
   {
     path: '',
+    runGuardsAndResolvers: 'always',
+    canActivate: [AuthGuard],
     children: [
-      { path: 'login', component: LoginComponent },
-      { path: 'register', component: RegisterComponent },
       { path: 'users/:id', component: UserDetailComponent },
       { path: 'users', component: UserListComponent },
     ]
   },
+  { path: 'login', component: LoginComponent },
+  { path: 'register', component: RegisterComponent },
   { path: '**', redirectTo: '', pathMatch: 'full'}
 ];
 

@@ -2,7 +2,7 @@ import { UserForLogin } from './../../models/UserForLogin';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import { AuthService } from 'src/app/services/auth.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -14,7 +14,11 @@ export class LoginComponent implements OnInit {
   login: FormGroup;
   loginFailed: boolean;
 
-  constructor(fb: FormBuilder, private authService: AuthService, private router: Router) {
+  constructor(fb: FormBuilder, private authService: AuthService, private router: Router, private route: ActivatedRoute) {
+    if (authService.isAuthenticated()) {
+      router.navigate(['/home']);
+    }
+
     this.login = fb.group({
       userName: fb.control(null, [Validators.required]),
       password: fb.control(null, [Validators.required]),
@@ -39,7 +43,9 @@ export class LoginComponent implements OnInit {
       .subscribe(
         succeed => {
           if (succeed) {
-            this.router.navigate(['/']);
+            this.route.snapshot.queryParamMap.has('returnUrl')
+              ? this.router.navigate([this.route.snapshot.queryParamMap.get('returnUrl')])
+              : this.router.navigate(['/']);
           } else {
             this.loginFailed = false;
           }

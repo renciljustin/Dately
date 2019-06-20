@@ -130,10 +130,16 @@ namespace Dately.Controllers
             );
         }
 
-        [HttpPost("logout")]
-        public async Task<IActionResult> Logout(string refreshToken)
+        [HttpPut("logout")]
+        public async Task<IActionResult> Logout([FromForm] string refreshToken)
         {
-            await Task.Delay(1000);
+            var refreshTokenFromDb = await _repo.GetRefreshTokenAsync(refreshToken);
+            
+            if (refreshTokenFromDb is null)
+                return NotFound("Refresh Token is invalid");
+
+            _repo.RevokeToken(refreshTokenFromDb);
+
             return Ok();
         }
 

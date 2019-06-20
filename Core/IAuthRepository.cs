@@ -18,5 +18,6 @@ namespace Dately.Core
         RefreshToken CreateRefreshToken(string userId);
         Task<RefreshToken> GetRefreshTokenAsync(string token);
         RefreshToken UpdateRefreshToken(RefreshToken refreshToken);
+        void RevokeToken(RefreshToken token);
     }
 }

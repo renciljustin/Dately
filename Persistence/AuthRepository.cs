@@ -95,5 +95,9 @@ namespace Dately.Persistence
             refreshToken.LastModified = DateTime.UtcNow;
             return refreshToken;
         }
+
+        public void RevokeToken(RefreshToken token) {
+            token.Revoked = true;
+        }
     }
 }

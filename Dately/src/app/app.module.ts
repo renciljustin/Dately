@@ -1,3 +1,4 @@
+import { AuthGuard } from './guards/auth.guard';
 import { TextTransformDirective } from './components/shared/directives/text-transform.directive';
 import { AuthService } from './services/auth.service';
 import { BrowserModule } from '@angular/platform-browser';
@@ -44,7 +45,8 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
   ],
   providers: [
     AuthService,
-    TokenService
+    TokenService,
+    AuthGuard
   ],
   bootstrap: [AppComponent]
 })

@@ -6,7 +6,7 @@ import { environment } from './../../environments/environment';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { TokenService } from './token.service';
-import { map, catchError } from 'rxjs/operators';
+import { map, catchError, tap } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 
 @Injectable({
@@ -39,6 +39,22 @@ export class AuthService {
         map(res => res as UserForDetail),
         catchError((error: HttpErrorResponse) => {
           console.log(error.error.errors || error.error);
+          return throwError(error);
+        })
+      );
+  }
+
+  logout() {
+    const form = new FormData();
+    form.append('refreshToken', this.tokenService.getRefreshToken());
+
+    return this.http.put(`${this.uri}logout`, form)
+      .pipe(
+        tap(() => {
+          this.tokenService.destroyToken();
+        }),
+        catchError((error: HttpErrorResponse) => {
+          // console.log(error.error.errors || error.error);
           return throwError(error);
         })
       );

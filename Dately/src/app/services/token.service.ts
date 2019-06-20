@@ -48,4 +48,14 @@ export class TokenService {
   hasRefreshToken(): boolean {
     return localStorage.getItem('refreshToken') ? true : false;
   }
+
+  destroyToken(): void {
+    if (this.hasToken()) {
+      localStorage.removeItem('token');
+    }
+
+    if (this.hasRefreshToken()) {
+      localStorage.removeItem('refreshToken');
+    }
+  }
 }
