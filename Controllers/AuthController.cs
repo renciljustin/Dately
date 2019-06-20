@@ -52,7 +52,10 @@ namespace Dately.Controllers
 
             return Ok(new
                 {
-                    token = new JwtSecurityTokenHandler().WriteToken(token),
+                    accessToken = new {
+                        token = new JwtSecurityTokenHandler().WriteToken(token),
+                        expiryDate = token.ValidTo.ToString("MMM-dd-yyyy hh:mm:ss tt")
+                    },
                     refreshToken = _mapper.Map<RefreshTokenForDisplayDto>(refreshToken)
                 }
             );
@@ -103,8 +106,8 @@ namespace Dately.Controllers
             return Ok(userFromDb != null);
         }
 
-        [HttpPost("{refreshToken}/refresh")]
-        public async Task<IActionResult> RefreshToken(string refreshToken)
+        [HttpPut("refresh")]
+        public async Task<IActionResult> RefreshToken([FromForm] string refreshToken)
         {
             var refreshTokenFromDb = await _repo.GetRefreshTokenAsync(refreshToken);
 
@@ -124,7 +127,10 @@ namespace Dately.Controllers
 
             return Ok(new 
                 {
-                    token = new JwtSecurityTokenHandler().WriteToken(token),
+                    accessToken = new {
+                        token = new JwtSecurityTokenHandler().WriteToken(token),
+                        expiryDate = token.ValidTo.ToString("MMM-dd-yyyy hh:mm:ss tt")
+                    },
                     refreshToken = _mapper.Map<RefreshTokenForDisplayDto>(newRefreshToken)
                 }
             );
@@ -154,7 +160,7 @@ namespace Dately.Controllers
                 _config["Token:Issuer"],
                 _config["Token:Audience"],
                 claims,
-                expires: DateTime.UtcNow.AddMinutes(5),
+                expires: DateTime.Now.AddMinutes(15),
                 signingCredentials: credentials
             );
 
@@ -167,7 +173,7 @@ namespace Dately.Controllers
             {
                 new Claim(JwtRegisteredClaimNames.NameId, userFromDb.Id),
                 new Claim(JwtRegisteredClaimNames.UniqueName, userFromDb.UserName),
-                new Claim(JwtRegisteredClaimNames.Email, userFromDb.Email)
+                new Claim(JwtRegisteredClaimNames.Email, userFromDb.Email),
             };
 
             var roles = await _repo.GetRolesAsync(userFromDb);

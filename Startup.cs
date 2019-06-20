@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 using AutoMapper;
 using Dately.Core;
 using Dately.Core.Models;
@@ -44,16 +45,21 @@ namespace Dately
             services.AddIdentity<User, Role>()
                 .AddEntityFrameworkStores<DatelyDbContext>()
                 .AddDefaultTokenProviders();
-            services.AddAuthentication(opt => opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(opt => {
-                    opt.TokenValidationParameters = new TokenValidationParameters()
-                    {
-                        ValidIssuer = Configuration["Token:Issuer"],
-                        ValidAudience = Configuration["Token:Audience"],
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration["Token:Key"])),
-                        ValidateIssuerSigningKey = true
-                    };
-                });
+            services.AddAuthentication(opt => {
+                opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(opt => {
+                opt.TokenValidationParameters = new TokenValidationParameters()
+                {
+                    ValidIssuer = Configuration["Token:Issuer"],
+                    ValidAudience = Configuration["Token:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration["Token:Key"])),
+                    ValidateIssuerSigningKey = true,
+                    ClockSkew = TimeSpan.Zero
+                };
+            });
+            
             services.AddAuthorization(opt => {
                 opt.AddPolicy(PolicyPrefix.RequireAdmin, p => p.RequireRole(RolePrefix.Admin));
                 opt.AddPolicy(PolicyPrefix.RequireModerator, p => p.RequireRole(RolePrefix.Admin, RolePrefix.Moderator));

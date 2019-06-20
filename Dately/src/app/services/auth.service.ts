@@ -8,6 +8,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { TokenService } from './token.service';
 import { map, catchError, tap } from 'rxjs/operators';
 import { throwError } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -16,13 +17,13 @@ export class AuthService {
 
   uri = environment.api + 'auth/';
 
-  constructor(private http: HttpClient, private tokenService: TokenService) { }
+  constructor(private http: HttpClient, private tokenService: TokenService, private router: Router) { }
 
   login(resource: UserForLogin) {
     return this.http.post(this.uri + 'login', resource)
       .pipe(
         map((res: any) => {
-          this.tokenService.setToken(res.token);
+          this.tokenService.setToken(res.accessToken.token);
           this.tokenService.setRefreshToken(res.refreshToken.token);
           return true;
         }),
@@ -44,6 +45,19 @@ export class AuthService {
       );
   }
 
+  refresh() {
+    const form = new FormData();
+    form.append('refreshToken', this.tokenService.getRefreshToken());
+
+    return this.http.put(this.uri + 'refresh', form)
+      .pipe(
+        map((res: any) => {
+          this.tokenService.setToken(res.accessToken.token);
+          return res;
+        })
+      );
+  }
+
   logout() {
     const form = new FormData();
     form.append('refreshToken', this.tokenService.getRefreshToken());
@@ -54,9 +68,12 @@ export class AuthService {
           this.tokenService.destroyToken();
         }),
         catchError((error: HttpErrorResponse) => {
-          // console.log(error.error.errors || error.error);
           return throwError(error);
         })
+      ).subscribe(
+        () => {
+          this.router.navigate(['/login']);
+        }
       );
   }
 

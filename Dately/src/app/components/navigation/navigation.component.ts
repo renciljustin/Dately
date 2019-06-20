@@ -14,9 +14,6 @@ export class NavigationComponent implements OnInit {
   }
 
   onLogout() {
-    this.authService.logout()
-      .subscribe(() => {
-        console.log('logout successful.');
-      });
+    this.authService.logout();
   }
 }

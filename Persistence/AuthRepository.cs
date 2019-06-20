@@ -90,7 +90,7 @@ namespace Dately.Persistence
 
         public RefreshToken UpdateRefreshToken(RefreshToken refreshToken)
         {
-            refreshToken.ExpiryDate = DateTime.UtcNow.AddHours(3);
+            refreshToken.ExpiryDate = DateTime.Now.AddHours(12);
             refreshToken.TotalRefresh++;
             refreshToken.LastModified = DateTime.UtcNow;
             return refreshToken;

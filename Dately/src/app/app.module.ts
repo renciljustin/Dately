@@ -1,10 +1,11 @@
+import { AuthInterceptor } from './auth.interceptor';
 import { AuthGuard } from './guards/auth.guard';
 import { TextTransformDirective } from './components/shared/directives/text-transform.directive';
 import { AuthService } from './services/auth.service';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -46,7 +47,8 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
   providers: [
     AuthService,
     TokenService,
-    AuthGuard
+    AuthGuard,
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]
 })

@@ -4,15 +4,14 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Dately.Core;
 using Dately.Persistence.Dtos;
-using Dately.Shared.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Dately.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Policy = PolicyPrefix.RequireUser)]
     public class UsersController : ControllerBase
     {
         private readonly IUserRepository _repo;
