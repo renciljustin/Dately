@@ -6,6 +6,7 @@ using Dately.Core;
 using Dately.Core.Queries;
 using Dately.Persistence.Dtos;
 using Dately.Persistence.QueryDtos;
+using Dately.Persistence.ResultDtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -29,7 +30,9 @@ namespace Dately.Controllers
         {
             var usersFromDb = await _repo.GetUsersAsync(_mapper.Map<UserQuery>(query));
 
-            return Ok(_mapper.Map<List<UserForListDto>>(usersFromDb));
+            var usersToReturn = _mapper.Map<UserResultDto>(usersFromDb);
+
+            return Ok(usersToReturn);
         }
 
         [HttpGet("{id}")]

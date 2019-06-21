@@ -1,14 +1,14 @@
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Dately.Core.Models;
 using Dately.Core.Queries;
+using Dately.Core.Results;
 
 namespace Dately.Core
 {
     public interface IUserRepository
     {
-         Task<IEnumerable<User>> GetUsersAsync(UserQuery query);
+         Task<UserResult> GetUsersAsync(UserQuery query);
          Task<User> GetUserAsync(string id);
     }
 }

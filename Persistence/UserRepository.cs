@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Dately.Core;
 using Dately.Core.Models;
 using Dately.Core.Queries;
+using Dately.Core.Results;
 using Dately.Shared.Extensions;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,7 +20,7 @@ namespace Dately.Persistence
             _context = context;
 
         }
-        public async Task<IEnumerable<User>> GetUsersAsync(UserQuery query)
+        public async Task<UserResult> GetUsersAsync(UserQuery query)
         {
             var users = _context.Users
                 .Include(u => u.Roles)
@@ -41,9 +42,17 @@ namespace Dately.Persistence
 
             users = users.ApplyOrdering(query, columnsMap);
 
+            var total = await users.LongCountAsync();
+
             users = users.ApplyPaging(query);
 
-            return await users.ToListAsync();
+            var userResult = new UserResult
+            {
+                Users = await users.ToListAsync(),
+                Total = total
+            };
+
+            return userResult;
         }
 
         public async Task<User> GetUserAsync(string id)
