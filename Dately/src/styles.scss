@@ -1,6 +1,10 @@
 @import "~bootstrap/dist/css/bootstrap.min.css";
-@import "~bootswatch/dist/minty/bootstrap.min.css";
+@import "../node_modules/bootswatch/dist/cerulean/bootstrap.min.css";
 @import "~ngx-bootstrap/datepicker/bs-datepicker.css";
+@import "~@fortawesome/fontawesome-free/css/all.min.css";
+
+$feminine: rgb(205, 100, 155);
+$masculine: rgb(80, 130, 180);
 
 body {
     background-color: #f1f1f1;
@@ -9,4 +13,12 @@ body {
 
 .form-control.ng-touched.ng-invalid {
     border: 2px solid rgba(211, 114, 114, 0.50);
+}
+
+.fa-mars {
+    color: $masculine;
+}
+
+.fa-venus {
+    color: $feminine;
 }

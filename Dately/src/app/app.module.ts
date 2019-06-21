@@ -1,3 +1,4 @@
+import { AgePipe } from './components/shared/pipes/age.pipe';
 import { AuthGuard } from './guards/auth.guard';
 import { AppControlsModule } from './app-controls.module';
 import { AppDirectivesModule } from './app-directives.module';
@@ -28,7 +29,8 @@ import { TokenService } from './services/token.service';
     NavigationComponent,
     RegisterComponent,
     UserDetailComponent,
-    UserListComponent
+    UserListComponent,
+    AgePipe
   ],
   imports: [
     AppControlsModule,
@@ -39,6 +41,7 @@ import { TokenService } from './services/token.service';
     FormsModule,
     HttpClientModule,
     ReactiveFormsModule
+    
   ],
   providers: [
     AuthGuard,

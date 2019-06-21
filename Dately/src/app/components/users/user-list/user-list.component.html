@@ -1,3 +1,57 @@
-<p>
-  user-list works!
-</p>
+<section>
+  <div class="container bg-secondary py-5">
+    <form>
+      <div class="form-group">
+        <input type="search" name="search" id="search" class="form-control" placeholder="search name">
+      </div>
+      
+     <div class="text-right">
+      <div class="btn-group mr-2">
+        <button class="btn btn-primary">
+          <i class="fas fa-filter"></i>
+        </button>
+        <button class="btn btn-dark">
+          <i class="fas fa-minus"></i>
+        </button>
+      </div>
+      <button class="btn btn-primary px-5">
+        <i class="fas fa-search"></i>
+        Search
+      </button>
+     </div>
+    </form>
+  </div>
+  <div class="row no-gutters">
+    <div *ngFor="let user of userResult.users" class="col-lg-3 col-md-4 col-sm-6 p-2">
+      <div class="card">
+        <img class="card-img-top h-auto"
+            src="{{user.gender == 0 ? 'https://vignette.wikia.nocookie.net/date-a-live/images/2/25/Shido_2.jpg/revision/latest?cb=20140822101823' : 'https://vignette.wikia.nocookie.net/date-a-live/images/c/c5/Adorable_Yoshino.jpg/revision/latest?cb=20161221004048'}}"
+            [alt]="user.id">
+        <div class="card-body">
+          <h5 class="card-title text-dark">
+            {{user.firstName}}
+          </h5>
+          
+          <div class="card-text">{{user.birthDate | age}}</div>
+          <div class="card-text text-center">
+              <i class="fas fa-2x" [ngClass]="{'fa-mars': user.gender == 0,'fa-venus': user.gender == 1}"></i>
+              <i class="fas fa-long-arrow-alt-right fa-2x mx-2"></i>
+              <i class="fas fa-2x" [ngClass]="{'fa-mars': user.interest == 0,'fa-venus': user.interest == 1}"></i>
+            </div>
+
+          <div class="text-center mt-3">
+            <div class="btn btn-primary mx-2">
+                <i class="fas fa-search"></i>
+            </div>
+            <div class="btn btn-primary mx-2">
+                <i class="fas fa-comment"></i>
+            </div>
+            <div class="btn btn-primary mx-2">
+                <i class="fas fa-heart"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
