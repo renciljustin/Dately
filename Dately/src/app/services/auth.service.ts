@@ -1,7 +1,7 @@
-import { TokenPayload } from './../models/TokenPayload';
-import { UserForDetail } from './../models/UserForDetail';
-import { UserForRegister } from './../models/UserForRegister';
-import { UserForLogin } from './../models/UserForLogin';
+import { TokenPayload } from '../core/models/token-payload.model';
+import { UserDetail } from '../core/models/user-detail.model';
+import { UserRegister } from '../core/models/user-register.model';
+import { UserForLogin } from '../core/models/user-login.model';
 import { environment } from './../../environments/environment';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
@@ -34,10 +34,10 @@ export class AuthService {
       );
   }
 
-  register(resource: UserForRegister) {
+  register(resource: UserRegister) {
     return this.http.post(this.uri + 'register', resource)
       .pipe(
-        map(res => res as UserForDetail),
+        map(res => res as UserDetail),
         catchError((error: HttpErrorResponse) => {
           console.log(error.error.errors || error.error);
           return throwError(error);

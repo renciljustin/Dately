@@ -1,5 +1,5 @@
 import { AuthService } from './../../services/auth.service';
-import { UserForRegister } from './../../models/UserForRegister';
+import { UserRegister } from '../../core/models/user-register.model';
 import { FormGroup, FormBuilder, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
@@ -135,7 +135,7 @@ export class RegisterComponent implements OnInit {
   }
 
   onRegister() {
-    const userToRegister = this.register.value as UserForRegister;
+    const userToRegister = this.register.value as UserRegister;
 
     this.authService.register(userToRegister)
       .subscribe(

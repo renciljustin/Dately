@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { JwtHelperService } from '@auth0/angular-jwt';
-import { TokenPayload } from '../models/TokenPayload';
+import { TokenPayload } from '../core/models/token-payload.model';
 
 @Injectable({
   providedIn: 'root'

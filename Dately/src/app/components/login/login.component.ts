@@ -1,4 +1,4 @@
-import { UserForLogin } from './../../models/UserForLogin';
+import { UserForLogin } from '../../core/models/user-login.model';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import { AuthService } from 'src/app/services/auth.service';
