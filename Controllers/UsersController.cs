@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Dately.Core;
+using Dately.Core.Queries;
 using Dately.Persistence.Dtos;
+using Dately.Persistence.QueryDtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Dately.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class UsersController : ControllerBase
@@ -23,9 +25,9 @@ namespace Dately.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetUsers()
+        public async Task<IActionResult> GetUsers([FromQuery] UserQueryDto query)
         {
-            var usersFromDb = await _repo.GetUsersAsync();
+            var usersFromDb = await _repo.GetUsersAsync(_mapper.Map<UserQuery>(query));
 
             return Ok(_mapper.Map<List<UserForListDto>>(usersFromDb));
         }

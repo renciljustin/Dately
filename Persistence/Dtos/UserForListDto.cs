@@ -10,5 +10,6 @@ namespace Dately.Persistence.Dtos
         public string LastName { get; set; }
         public Gender? Gender { get; set; }
         public DateTime? BirthDate { get; set; }
+        public Gender? Interest { get; set; }
     }
 }

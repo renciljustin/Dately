@@ -1,6 +1,8 @@
 using AutoMapper;
 using Dately.Core.Models;
+using Dately.Core.Queries;
 using Dately.Persistence.Dtos;
+using Dately.Persistence.QueryDtos;
 
 namespace Dately.Mapping
 {
@@ -8,11 +10,16 @@ namespace Dately.Mapping
     {
         public MappingProfile()
         {
+            // entities
             CreateMap<UserForRegisterDto, User>();
             
+            CreateMap<RefreshToken, RefreshTokenForDisplayDto>();
             CreateMap<User, UserForDetailDto>();
             CreateMap<User, UserForListDto>();
-            CreateMap<RefreshToken, RefreshTokenForDisplayDto>();
+
+            // queries
+            CreateMap<BaseQueryDto, BaseQuery>();
+            CreateMap<UserQueryDto, UserQuery>();
         }
     }
 }
