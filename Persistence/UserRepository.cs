@@ -7,6 +7,7 @@ using Dately.Core;
 using Dately.Core.Models;
 using Dately.Core.Queries;
 using Dately.Core.Results;
+using Dately.Shared.Enums;
 using Dately.Shared.Extensions;
 using Microsoft.EntityFrameworkCore;
 
@@ -33,6 +34,20 @@ namespace Dately.Persistence
 
             if (query.Gender != null)
                 users = users.Where(u => u.Gender == query.Gender);
+                
+            if (query.Interest != null)
+                users = users.Where(u => u.Interest == query.Interest);
+
+            if (query.Age != null)
+            {
+                var yearToday = DateTime.UtcNow.Year - 1;
+
+                if (query.Age == Age.Teen)
+                    users = users.Where(u => yearToday - u.BirthDate.Value.Year >= 18 && yearToday - u.BirthDate.Value.Year <= 30);
+            
+                 if (query.Age == Age.Adult)
+                    users = users.Where(u => yearToday - u.BirthDate.Value.Year > 30);
+            }
 
             var columnsMap = new Dictionary<string, Expression<Func<User, object>>>
             {
