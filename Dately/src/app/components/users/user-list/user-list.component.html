@@ -7,14 +7,34 @@
       
      <div class="text-right">
       <div class="btn-group mr-2">
+        <div class="btn-group" dropdown placement="bottom right">
+          <button id="button-alignment" dropdownToggle type="button" class="btn btn-primary dropdown-toggle" aria-controls="dropdown-alignment">
+            Date Joined
+            <span class="caret"></span>
+          </button>
+          <ul id="dropdown-alignment" *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="button-alignment">
+            <li role="menuitem"><button class="dropdown-item">Date Joined</button></li>
+            <li role="menuitem"><button class="dropdown-item">Name</button></li>
+            <li role="menuitem"><button class="dropdown-item">Age</button></li>
+            <li role="menuitem"><button class="dropdown-item">Likes</button></li>
+          </ul>
+        </div>
         <button class="btn btn-primary">
-          <i class="fas fa-filter"></i>
+          <i class="fas fa-arrow-up"></i>
         </button>
         <button class="btn btn-dark">
-          <i class="fas fa-minus"></i>
+          <i class="fas fa-arrow-down"></i>
         </button>
       </div>
-      <button class="btn btn-primary px-5">
+      <div class="btn-group mr-2">
+        <button class="btn" [ngClass]="{'btn-primary': hasFilter(), 'btn-dark': !hasFilter()}" (click)="showFilter()">
+          <i class="fas fa-filter"></i>
+        </button>
+        <button class="btn" [ngClass]="{'btn-primary': !hasFilter(), 'btn-dark': hasFilter()}" (click)="removeFilter()">
+            <i class="fas fa-ban"></i>
+        </button>
+      </div>
+      <button class="btn btn-primary px-5" (click)="search()">
         <i class="fas fa-search"></i>
         Search
       </button>
@@ -40,13 +60,13 @@
             </div>
 
           <div class="text-center mt-3">
-            <div class="btn btn-primary mx-2">
+            <div class="btn btn-primary">
                 <i class="fas fa-search"></i>
             </div>
             <div class="btn btn-primary mx-2">
                 <i class="fas fa-comment"></i>
             </div>
-            <div class="btn btn-primary mx-2">
+            <div class="btn btn-primary">
                 <i class="fas fa-heart"></i>
             </div>
           </div>

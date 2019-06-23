@@ -1,3 +1,4 @@
+import { UserListFilterModalComponent } from './components/users/user-list-filter-modal/user-list-filter-modal.component';
 import { AgePipe } from './components/shared/pipes/age.pipe';
 import { AuthGuard } from './guards/auth.guard';
 import { AppControlsModule } from './app-controls.module';
@@ -30,7 +31,11 @@ import { TokenService } from './services/token.service';
     RegisterComponent,
     UserDetailComponent,
     UserListComponent,
-    AgePipe
+    AgePipe,
+    UserListFilterModalComponent
+  ],
+  entryComponents: [
+    UserListFilterModalComponent
   ],
   imports: [
     AppControlsModule,
@@ -41,7 +46,6 @@ import { TokenService } from './services/token.service';
     FormsModule,
     HttpClientModule,
     ReactiveFormsModule
-    
   ],
   providers: [
     AuthGuard,
