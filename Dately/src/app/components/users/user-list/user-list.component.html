@@ -1,43 +1,48 @@
 <section>
   <div class="container bg-secondary py-5">
     <form>
-      <div class="form-group">
-        <input type="search" name="search" id="search" class="form-control" placeholder="search name">
+      <div class="form-group input-group">
+        <input [(ngModel)]="userQuery.name" type="search" name="search" id="search" class="form-control" placeholder="search name" (keyup)="searchName()">
+        <div class="input-group-append">
+          <button class="btn btn-primary" (click)="search()">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
       </div>
       
      <div class="text-right">
       <div class="btn-group mr-2">
         <div class="btn-group" dropdown placement="bottom right">
           <button id="button-alignment" dropdownToggle type="button" class="btn btn-primary dropdown-toggle" aria-controls="dropdown-alignment">
-            Date Joined
+            {{sortBy.value}}
             <span class="caret"></span>
           </button>
           <ul id="dropdown-alignment" *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="button-alignment">
-            <li role="menuitem"><button class="dropdown-item">Date Joined</button></li>
-            <li role="menuitem"><button class="dropdown-item">Name</button></li>
-            <li role="menuitem"><button class="dropdown-item">Age</button></li>
-            <li role="menuitem"><button class="dropdown-item">Likes</button></li>
+            <li *ngFor="let sort of sortMap" role="menuitem">
+              <button class="dropdown-item" (click)="changeSortBy(sort)">
+                {{sort.value}}
+              </button>
+            </li>
           </ul>
         </div>
-        <button class="btn btn-primary">
+        <button class="btn" [ngClass]="{'btn-primary': isSortAscending(), 'btn-dark': !isSortAscending()}" (click)="sortByAscending()">
           <i class="fas fa-arrow-up"></i>
         </button>
-        <button class="btn btn-dark">
+        <button class="btn" [ngClass]="{'btn-primary': !isSortAscending(), 'btn-dark': isSortAscending()}" (click)="sortByDescending()">
           <i class="fas fa-arrow-down"></i>
         </button>
       </div>
-      <div class="btn-group mr-2">
-        <button class="btn" [ngClass]="{'btn-primary': hasFilter(), 'btn-dark': !hasFilter()}" (click)="showFilter()">
+      <div class="btn-group">
+        <button class="btn" [ngClass]="{'btn-primary': hasFilter(), 'btn-dark': !hasFilter()}" (click)="showFilter(filter)">
           <i class="fas fa-filter"></i>
         </button>
+        <ng-template #filter>
+          <app-user-list-filter-modal [modalRef]="modalRef" (filterChange)="getUsers()"></app-user-list-filter-modal>
+        </ng-template>
         <button class="btn" [ngClass]="{'btn-primary': !hasFilter(), 'btn-dark': hasFilter()}" (click)="removeFilter()">
             <i class="fas fa-ban"></i>
         </button>
       </div>
-      <button class="btn btn-primary px-5" (click)="search()">
-        <i class="fas fa-search"></i>
-        Search
-      </button>
      </div>
     </form>
   </div>

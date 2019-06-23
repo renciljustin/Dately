@@ -6,6 +6,5 @@ export function serializeQueryParams(queryParams: any): string {
             queryParamsArr.push(`${key}=${queryParams[key]}`);
         }
     }
-
     return queryParamsArr.join('&');
 }

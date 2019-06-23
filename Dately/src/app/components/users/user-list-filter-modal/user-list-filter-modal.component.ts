@@ -1,6 +1,5 @@
-import { filter } from 'rxjs/operators';
 import { BsModalRef } from 'ngx-bootstrap/modal';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-user-list-filter-modal',
@@ -11,7 +10,10 @@ export class UserListFilterModalComponent implements OnInit {
 
   userListFilter: any = {};
 
-  constructor(public bsModalRef: BsModalRef) {}
+  @Input() modalRef: BsModalRef;
+  @Output() filterChange = new EventEmitter();
+
+  constructor() {}
 
   ngOnInit() {
     this.initializeFilter();
@@ -29,7 +31,7 @@ export class UserListFilterModalComponent implements OnInit {
     }
   }
 
-  onApplyFilter() {
+  applyFilter() {
     if (this.userListFilter.gender === -1) {
       delete this.userListFilter.gender;
     }
@@ -48,11 +50,13 @@ export class UserListFilterModalComponent implements OnInit {
       localStorage.setItem('userListFilter', JSON.stringify(this.userListFilter));
     }
 
-    this.bsModalRef.hide();
+    this.filterChange.emit();
+
+    this.close();
   }
 
-  onClose() {
-    this.bsModalRef.hide();
+  close() {
+    this.modalRef.hide();
   }
 
   removeFilter() {

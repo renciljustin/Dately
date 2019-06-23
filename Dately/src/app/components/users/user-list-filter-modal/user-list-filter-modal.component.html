@@ -3,7 +3,7 @@
     <i class="fas fa-filter"></i>
     Search Filter
   </h4>
-  <button type="button" class="close" aria-label="Close" (click)="bsModalRef.hide()">
+  <button type="button" class="close" aria-label="Close" (click)="close()">
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
@@ -74,6 +74,6 @@
   <button class="btn btn-link d-block ml-auto" (click)="resetFilter()">reset filter</button>
 </div>
 <div class="modal-footer">
-  <button type="button" class="btn btn-primary" (click)="onApplyFilter()">Apply</button>
-  <button type="button" class="btn btn-default" (click)="onClose()">Cancel</button>
+  <button type="button" class="btn btn-primary" (click)="applyFilter()">Apply</button>
+  <button type="button" class="btn btn-default" (click)="close()">Cancel</button>
 </div>
