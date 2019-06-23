@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Dately.Core.Models
 {
-    public class User : IdentityUser
+    public class User : IdentityUser, IModelBase
     {
         [Required]
         [StringLength(maximumLength: 255, MinimumLength=2, ErrorMessage="Must be at least 2 to 255 characters.")]
@@ -23,6 +23,12 @@ namespace Dately.Core.Models
         public DateTime? BirthDate { get; set; }
 
         public Gender? Interest { get; set; }
+
+        public DateTime? CreationTime { get; set; }
+
+        public DateTime? LastModified { get; set; }
+        
+        public bool? Flag { get; set; }
 
         public ICollection<UserRole> Roles { get; set; }
 

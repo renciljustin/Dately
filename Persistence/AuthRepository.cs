@@ -47,6 +47,9 @@ namespace Dately.Persistence
 
         public async Task<IdentityResult> CreateUserAsync(User user, string password)
         {
+            user.CreationTime = DateTime.UtcNow;
+            user.LastModified = DateTime.UtcNow;
+            user.Flag = true;
             return await _userManager.CreateAsync(user, password);
         }
 

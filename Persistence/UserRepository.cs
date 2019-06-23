@@ -51,8 +51,9 @@ namespace Dately.Persistence
 
             var columnsMap = new Dictionary<string, Expression<Func<User, object>>>
             {
-                ["name"] = user => user.FirstName + ' ' + user.LastName,
-                ["age"] = user => user.BirthDate
+                ["age"] = user => user.BirthDate,
+                ["creationtime"] = user => user.CreationTime,
+                ["name"] = user => user.FirstName + ' ' + user.LastName
             };
 
             users = users.ApplyOrdering(query, columnsMap);

@@ -3,7 +3,7 @@ using Dately.Shared.Enums;
 
 namespace Dately.Persistence.Dtos
 {
-    public class UserForDetailDto
+    public class UserForDetailDto: ModelBaseForDetailDto
     {
         public string UserName { get; set; }
 

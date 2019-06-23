@@ -1,8 +1,8 @@
 using System;
 
-namespace Dately.Core.Models
+namespace Dately.Persistence.Dtos
 {
-    public class ModelBase: IModelBase
+    public class ModelBaseForDetailDto
     {
         public DateTime? CreationTime { get; set; }
         public DateTime? LastModified { get; set; }
